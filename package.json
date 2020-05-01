@@ -41,7 +41,6 @@
     "@types/sinon": "^9.0.0",
     "chai": "^3.4.0",
     "coveralls": "*",
-    "fixmyjs": "^2.0.0",
     "istanbul": "*",
     "jshint": "^2.11.0",
     "mocha": "*",
