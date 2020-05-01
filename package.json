@@ -25,17 +25,25 @@
     "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "dependencies": {
+    "chalk": "^4.0.0",
     "didyoumean": "~1.2.1",
     "glob": "^7.1.1",
-    "gulp-util": ">=3.0.0",
     "lodash": "^4.0.0",
+    "plugin-error": "^1.0.1",
     "through2": "^2.0.0",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "vinyl": "^2.2.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.13.4",
+    "@types/sinon": "^9.0.0",
     "chai": "^3.4.0",
     "coveralls": "*",
+    "fixmyjs": "^2.0.0",
     "istanbul": "*",
+    "jshint": "^2.11.0",
     "mocha": "*",
     "mocha-lcov-reporter": "*",
     "mocha-sinon": "^1.1.6",

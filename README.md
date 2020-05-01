@@ -143,7 +143,7 @@ msbuild({ architecture: 'x86' })
 msbuild({ properties: { WarningLevel: 2 } })
 ```
 
-**Hint:** Property values can use ```gulp-util``` templates (e.g. ```"<%= file.path %>"```)
+**Hint:** Property values can use ```lodash.template``` templates (e.g. ```"<%= file.path %>"```)
 
 #### verbosity
 
@@ -187,7 +187,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' })
 ```
 
-**Hint:** Logger parameters options can use ```gulp-util``` templates (e.g. ```"<%= file.path %>"```)
+**Hint:** Logger parameters options can use ```lodash.template``` templates (e.g. ```"<%= file.path %>"```)
 
 #### consoleLoggerParameters
 
@@ -195,7 +195,7 @@ msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' 
 
 **Default:** None
 
-**Hint:** Logger parameters options can use ```gulp-util``` templates (e.g. ```"<%= file.path %>"```)
+**Hint:** Logger parameters options can use ```lodash.template``` templates (e.g. ```"<%= file.path %>"```)
 
 #### loggerParameters
 
@@ -208,7 +208,7 @@ msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' 
 msbuild({ loggerParameters: 'XMLLogger,./MyLogger.dll;OutputAsHTML' })
 ```
 
-**Hint:** Logger parameters options can use ```gulp-util``` templates (e.g. ```"<%= file.path %>"```)
+**Hint:** Logger parameters options can use ```lodash.template``` templates (e.g. ```"<%= file.path %>"```)
 
 #### customArgs
 

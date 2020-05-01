@@ -5,8 +5,8 @@ var through = require('through2'),
     constants = require('./lib/constants'),
     msbuildRunner = require('./lib/msbuild-runner'),
     didYouMean = require('didyoumean'),
-    gutil = require('gulp-util'),
-    PluginError = gutil.PluginError;
+    chalk = require("chalk"),
+    PluginError = require("plugin-error");
 
 
 function mergeOptionsWithDefaults(options) {
@@ -24,7 +24,7 @@ function validateOptions(options) {
         msg += " Did you mean '" + match + "'?";
       }
 
-      throw new PluginError(constants.PLUGIN_NAME, gutil.colors.red(msg));
+      throw new PluginError(constants.PLUGIN_NAME, chalk.red(msg));
     }
   }
 }
