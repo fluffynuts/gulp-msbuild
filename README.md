@@ -1,7 +1,7 @@
 # gulp-msbuild
 [![NPM](https://img.shields.io/npm/v/gulp-msbuild.svg?style=flat-square)](https://www.npmjs.com/package/gulp-msbuild)
 [![NPM downloads](https://img.shields.io/npm/dm/gulp-msbuild.svg?style=flat-square)](https://www.npmjs.com/package/gulp-msbuild)
-[![Travis](https://img.shields.io/travis/fluffynuts/gulp-msbuild/master.svg?style=flat-square)](https://travis-ci.org/fluffynuts/gulp-msbuild)
+[![Travis](https://img.shields.io/travis/fluffynuts/gulp-msbuild/master.svg?style=flat-square)](https://travis-ci.com/fluffynuts/gulp-msbuild)
 [![Coveralls](https://img.shields.io/coveralls/fluffynuts/gulp-msbuild.svg?style=flat-square)](https://coveralls.io/github/fluffynuts/gulp-msbuild)
 [![David](https://img.shields.io/david/fluffynuts/gulp-msbuild.svg?style=flat-square)](https://david-dm.org/fluffynuts/gulp-msbuild)
 [![License](https://img.shields.io/npm/l/gulp-msbuild.svg?style=flat-square)](https://github.com/fluffynuts/gulp-msbuild/blob/master/LICENSE)
