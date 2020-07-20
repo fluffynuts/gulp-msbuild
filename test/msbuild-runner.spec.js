@@ -16,7 +16,7 @@ chai.use(require("sinon-chai"));
 require("mocha-sinon");
 
 var commandBuilder = require("../lib/msbuild-command-builder");
-var msbuildRunner = require("../lib/msbuild-runner");
+var msbuildRunnerSpec = require("../lib/msbuild-runner");
 
 var defaults;
 
@@ -60,7 +60,7 @@ describe("msbuild-runner", function () {
 
     simulateEvent("exit", 0);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function () {
       expect(console.log).to.have.been.calledWith(chalk.cyan("MSBuild complete!"));
     });
 
@@ -73,7 +73,7 @@ describe("msbuild-runner", function () {
 
     simulateEvent("exit", 0);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function () {
       expect(console.log).to.have.been.calledWith(chalk.cyan("Using MSBuild command:"), "msbuild", "/nologo");
     });
     done();
@@ -82,7 +82,7 @@ describe("msbuild-runner", function () {
   it("should log an error message when the msbuild command exits with a non-zero code", function (done) {
     simulateEvent("exit", 1);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function () {
       expect(console.log).to.have.been.calledWith(chalk.red("MSBuild failed with code 1!"));
     });
     done();
@@ -91,7 +91,7 @@ describe("msbuild-runner", function () {
   it("should log an error message when the msbuild command is killed by a signal", function (done) {
     simulateEvent("exit", null, "SIGUSR1");
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function () {
       expect(console.log).to.have.been.calledWith(chalk.red("MSBuild killed with signal SIGUSR1!"));
     });
     done();
@@ -102,7 +102,7 @@ describe("msbuild-runner", function () {
 
     simulateEvent("exit", 1);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function (err) {
       expect(err).to.be.an.instanceof(Error);
       expect(err.message).to.be.equal("MSBuild failed with code 1!");
       expect(console.log).to.have.been.calledWith(chalk.red("MSBuild failed with code 1!"));
@@ -115,7 +115,7 @@ describe("msbuild-runner", function () {
 
     simulateEvent("error", error);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function () {
       expect(console.log).to.have.been.calledWith(error);
       expect(console.log).to.have.been.calledWith(chalk.red("MSBuild failed!"));
     });
@@ -128,7 +128,7 @@ describe("msbuild-runner", function () {
 
     simulateEvent("error", error);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function (err) {
       expect(err).to.be.equal(error);
       expect(console.log).to.have.been.calledWith(error);
       expect(console.log).to.have.been.calledWith(chalk.red("MSBuild failed!"));
@@ -143,7 +143,7 @@ describe("msbuild-runner", function () {
     simulateEvent("error", error);
     simulateEvent("exit", 1);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function (err) {
       expect(err).to.be.equal(error);
       expect(console.log).to.have.been.calledWith(error);
       expect(console.log).to.have.been.calledWith(chalk.red("MSBuild failed!"));
@@ -160,7 +160,7 @@ describe("msbuild-runner", function () {
     simulateEvent("exit", 1);
     simulateEvent("error", error);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
+    msbuildRunnerSpec.startMsBuildTask(defaults, {}, null, function (err) {
       expect(err.message).to.be.equal("MSBuild failed with code 1!");
       expect(console.log).to.have.been.calledWith(chalk.red("MSBuild failed with code 1!"));
       expect(console.log).to.have.been.calledOnce;
