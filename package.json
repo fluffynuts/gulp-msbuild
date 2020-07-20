@@ -1,6 +1,6 @@
 {
   "name": "gulp-msbuild",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "msbuild plugin for gulp. Inspired by grunt-msbuild.",
   "keywords": [
     "gulpplugin",
@@ -23,7 +23,12 @@
   "scripts": {
     "lint": "jshint",
     "test": "istanbul test ./node_modules/mocha/bin/_mocha --report html -- test/*.js --reporter spec",
-    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "prerelease-beta": "run-s test",
+    "release-beta": "cross-env BETA=1 VERSION_INCREMENT_STRATEGY=patch run-s \"zarro release-npm\"",
+    "prerelease": "run-s test",
+    "release": "cross-env VERSION_INCREMENT_STRATEGY=minor run-s \"zarro release-npm\"",
+    "zarro": "zarro"
   },
   "dependencies": {
     "chalk": "^4.0.0",
