@@ -304,7 +304,7 @@ describe("msbuild-finder", function () {
       return msbuildFinderSpec.find({ platform: "win32", toolsVersion: -1 });
     };
 
-    expect(func).to.throw("No MSBuild Version was supplied!");
+    expect(func).to.throw(/No or invalid MSBuild version was supplied!/);
   });
 
   describe("when toolsVersion is \"auto\"", function () {
