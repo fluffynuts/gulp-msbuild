@@ -70,50 +70,60 @@ describe("msbuild-finder", function () {
     expect(result).to.be.equal("xbuild");
   });
 
-  it("should use msbuild on windows", function () {
-    const toolsVersion = 3.5;
-    const result = msbuildFinderSpec.find({
-      platform: "win32",
-      toolsVersion: toolsVersion,
-      // windir: windir
+  describe(`falling back on GAC-installed .net framework`, () => {
+    if (!process.env.WINDIR) {
+      it.skip(`Can't run GAC-based tests on this machine: No WINDIR env var`, () => {
+      });
+      return;
+    }
+    const basePath = path.join(process.env.WINDIR, "Microsoft.NET");
+    if (!dirExists(basePath)) {
+      it.skip(`Can't run GAC-based tests on this machine: no Microsoft.NET folder under ${
+        process.env.WINDIR}`, () => {
+      });
+      return;
+    }
+    it("should use msbuild on windows", function () {
+      const toolsVersion = 3.5;
+      const result = msbuildFinderSpec.find({
+        platform: "win32",
+        toolsVersion: toolsVersion,
+        // windir: windir
+      });
+
+      expect(result)
+        .to.match(/Framework\\v3.5\\MSBuild.exe$/);
     });
 
-    expect(result)
-      .to.match(/Framework\\v3.5\\MSBuild.exe$/);
-  });
+    it("should use 64bit msbuild on 64bit windows", function () {
+      const defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
 
-  it("should use 64bit msbuild on 64bit windows", function () {
-    const defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
+      const windir = "WINDIR";
+      const toolsVersion = 3.5;
+      const result = msbuildFinderSpec.find({
+        ...defaults,
+        platform: "win32",
+        toolsVersion: toolsVersion,
+        windir: windir
+      });
 
-    const windir = "WINDIR";
-    const toolsVersion = 3.5;
-    const result = msbuildFinderSpec.find({
-      ...defaults,
-      platform: "win32",
-      toolsVersion: toolsVersion,
-      windir: windir
+      expect(result)
+        .to.match(/Framework64\\v3.5\\MSBuild.exe$/);
     });
 
-    const expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
+    it("should use 64bit msbuild on windows with provided x64 architecture", function () {
+      const windir = "WINDIR";
+      const toolsVersion = 3.5;
+      const result = msbuildFinderSpec.find({
+        platform: "win32",
+        toolsVersion: toolsVersion,
+        windir: windir,
+        architecture: "x64"
+      });
 
-    expect(result)
-      .to.match(/Framework64\\v3.5\\MSBuild.exe$/);
-  });
-
-  it("should use 64bit msbuild on windows with provided x64 architecture", function () {
-    const windir = "WINDIR";
-    const toolsVersion = 3.5;
-    const result = msbuildFinderSpec.find({
-      platform: "win32",
-      toolsVersion: toolsVersion,
-      windir: windir,
-      architecture: "x64"
+      expect(result)
+        .to.match(/Framework64\\v3.5\\MSBuild.exe/);
     });
-
-    const expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-
-    expect(result)
-      .to.match(/Framework64\\v3.5\\MSBuild.exe/);
   });
 
   it("should use visual studio community msbuild 15 on windows with visual studio 2017 project and visual studio community installed", function () {
@@ -132,7 +142,7 @@ describe("msbuild-finder", function () {
     const result = msbuildFinderSpec.find({ platform: "win32", toolsVersion: toolsVersion, architecture: "x86" });
 
     expect(result)
-      .to.match(/\\15.0\\Bin\\MSBuild.exe/);
+      .to.match(/[\\|\/]15.0[\\|\/]Bin[\\|\/]MSBuild.exe/);
   });
 
   it("should use visual studio build tools msbuild 15 on windows with visual studio 2017 project and visual studio build tools installed", function () {
@@ -251,5 +261,14 @@ describe("msbuild-finder", function () {
 
     expect(func).to.throw(/invalid MSBuild version was supplied/i);
   });
+
+  function dirExists(at) {
+    try {
+      const st = fs.statSync(at);
+      return st && st.isDirectory();
+    } catch (e) {
+      return false;
+    }
+  }
 
 });
