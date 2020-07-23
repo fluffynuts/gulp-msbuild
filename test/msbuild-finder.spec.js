@@ -2,6 +2,7 @@
 "use strict";
 
 const chai = require("chai"),
+  os = require("os"),
   constants = require("../lib/constants"),
   expect = chai.expect,
   path = require("path");
@@ -146,6 +147,9 @@ describe("msbuild-finder", function () {
   });
 
   it("should use visual studio build tools msbuild 15 on windows with visual studio 2017 project and visual studio build tools installed", function () {
+    if (os.platform() !== "win32") {
+      return this.skip();
+    }
     const toolsVersion = 15.0;
 
     const pathRoot = process.env["ProgramFiles"] || path.join("C:", "Program Files");
@@ -166,11 +170,14 @@ describe("msbuild-finder", function () {
       architecture: "x86"
     });
 
-    expect(!!result.match(/2017\\BuildTools\\MSBuild\\15.0\\Bin\\MSBuild.exe$/))
+    expect(!!result.match(/2017[\\|\/]BuildTools[\\|\/]MSBuild[\\|\/]15.0[\\|\/]Bin[\\|\/]MSBuild.exe$/))
       .to.be.true;
   });
 
   it("should fall back to legacy build path on windows with visual studio 2017 project and visual studio is not installed", function () {
+    if (os.platform() !== "win32") {
+      return this.skip();
+    }
     const toolsVersion = 15.0;
 
     const pathRoot = process.env["ProgramFiles"] || path.join("C:", "Program Files");
@@ -192,7 +199,7 @@ describe("msbuild-finder", function () {
     });
 
     expect(result)
-      .to.match(/\\15.0\\Bin\\MSBuild.exe$/);
+      .to.match(/[\\|\/]15.0[\\|\/]Bin[\\|\/]MSBuild.exe$/);
   });
 
   describe(`should find version 16 from vs2019, when present`, () => {
@@ -234,6 +241,10 @@ describe("msbuild-finder", function () {
     }
 
     describe(`should find vs2017 on demand, when installed side-by-side with vs2019`, () => {
+      if (os.platform() !== "win32") {
+        return it.skip(`skipped on !win32`, () => {
+        });
+      }
       const
         all = msbuildFinderSpec.msBuildFromWhere("C:/Program Files (x86)", true),
         vs2017 = all.filter(pair => pair[0].indexOf("2017") > 0);
