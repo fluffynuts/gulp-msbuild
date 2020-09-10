@@ -57,7 +57,7 @@
     "proxyquire": "^1.8.0",
     "sinon": ">=1.4.0 <2",
     "sinon-chai": "^2.8.0",
-    "zarro": "^1.66.0"
+    "zarro": "^1.78.0"
   },
   "engines": {
     "node": ">=0.8.0",
