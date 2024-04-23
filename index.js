@@ -1,7 +1,7 @@
 'use strict';
 
 const through = require("through2"),
-  cloneDeep = require("lodash.clonedeep"),
+  { cloneDeep } = require("lodash"),
   constants = require("./lib/constants"),
   msbuildRunner = require("./lib/msbuild-runner"),
   didYouMean = require("didyoumean"),
