@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
 const through = require("through2"),
   { cloneDeep } = require("lodash"),
   constants = require("./lib/constants"),
   msbuildRunner = require("./lib/msbuild-runner"),
   didYouMean = require("didyoumean"),
-  chalk = require("chalk"),
+  chalk = require("ansi-colors"),
   PluginError = require("plugin-error");
 
 
@@ -36,7 +36,7 @@ module.exports = function(options) {
   const mergedOptions = cloneDeep(mergeOptionsWithDefaults(options));
   validateOptions(mergedOptions);
 
-  const stream = through.obj(function (file, enc, callback) {
+  return through.obj({}, function (file, enc, callback) {
     const self = this;
     if (!file || !file.path) {
       self.push(file);
@@ -52,7 +52,5 @@ module.exports = function(options) {
       }
       return callback();
     });
-  });
-
-  return stream;
+  }, undefined);
 };

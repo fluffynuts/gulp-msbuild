@@ -8,7 +8,7 @@ var chai = require("chai"),
   gutil = require("../lib/gutil"),
   sinon = require("sinon"),
   path = require("path"),
-  chalk = require("chalk"),
+  chalk = require("ansi-colors"),
   fs = require("fs"),
   proxyquire = require("proxyquire");
 

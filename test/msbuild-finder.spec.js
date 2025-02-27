@@ -21,7 +21,9 @@ describe("msbuild-finder", function () {
     it("should use msbuild if possible", function () {
 
       const mock = this.sinon.mock(child);
-      mock.expects("spawnSync").withArgs("which", [ "msbuild" ], { encoding: "utf8" }).returns({});
+      mock.expects("spawnSync").withArgs("which", [ "msbuild" ], { encoding: "utf8" }).returns({
+        status: 0
+      });
 
       const result = msbuildFinderSpec.find({ platform: "linux" });
 
@@ -32,7 +34,7 @@ describe("msbuild-finder", function () {
 
       const mock = this.sinon.mock(child);
       mock.expects("spawnSync").withArgs("which", [ "msbuild" ], { encoding: "utf8" }).returns({
-        stderr: 1
+        status: 1
       });
 
       const result = msbuildFinderSpec.find({ platform: "linux" });
@@ -46,7 +48,9 @@ describe("msbuild-finder", function () {
     it("should use msbuild if possible", function () {
 
       const mock = this.sinon.mock(child);
-      mock.expects("spawnSync").withArgs("which", [ "msbuild" ], { encoding: "utf8" }).returns({});
+      mock.expects("spawnSync").withArgs("which", [ "msbuild" ], { encoding: "utf8" }).returns({
+        status: 0
+      });
 
       const result = msbuildFinderSpec.find({ platform: "darwin" });
 
@@ -57,7 +61,7 @@ describe("msbuild-finder", function () {
 
       const mock = this.sinon.mock(child);
       mock.expects("spawnSync").withArgs("which", [ "msbuild" ], { encoding: "utf8" }).returns({
-        stderr: 1
+        status: 1
       });
 
       const result = msbuildFinderSpec.find({ platform: "darwin" });
