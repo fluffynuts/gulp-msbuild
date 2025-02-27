@@ -6,3 +6,4 @@
 #   so this means anything you set in your package.json, eg with
 #   cross-env, will override what's in here unless you've specifically
 #   marked the setting in here as forced with !
+GIT_REMOTE=origin
