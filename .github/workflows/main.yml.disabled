@@ -1,0 +1,129 @@
+name: Build and Release
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write  # This grants write permissions to the token
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  release:
+    if: github.event.pull_request.merged == true
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Debug dist folder
+      run: ls -la dist
+
+    - name: Zip dist folder
+      run: zip -r gulp-msbuild.zip dist
+
+    - name: Get the latest tag
+      id: get_tag
+      run: bash .github/scripts/get-latest-tag.sh
+
+    - name: Check for [skip] in PR title
+      id: check_skip
+      run: bash .github/scripts/check-skip.sh "${{ github.event.pull_request.title }}"
+
+    - name: Determine version increment
+      if: env.skip == 'false'
+      id: determine_increment
+      run: bash .github/scripts/verify-pr-title.sh "${{ github.event.pull_request.title }}" "${{ env.latest_tag }}"
+
+    - name: Check if tag exists on remote
+      id: check_tag
+      run: bash .github/scripts/check-tag-exists.sh "${{ env.new_tag }}"
+
+    - name: Create new tag
+      if:  env.skip == 'false' && steps.check_tag.outcome == 'success'
+      id: create_tag
+      run: bash .github/scripts/create-tag.sh "${{ env.new_tag }}"
+
+    - name: Create GitHub Release
+      if: env.skip == 'false' && steps.create_tag.outcome == 'success'
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ env.new_tag }}
+        release_name: ${{ env.new_tag }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Release Asset
+      if: env.skip == 'false'
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./gulp-msbuild.zip
+        asset_name: gulp-msbuild.zip
+        asset_content_type: application/zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up .npmrc
+      if: env.skip == 'false'
+      run: bash .github/scripts/setup-npmrc.sh "${{ secrets.NPM_PUBLISH_KEY }}"
+    
+    - name: Create temp_package
+      if: env.skip == 'false'
+      run: bash .github/scripts/create-package.sh
+
+    - name: Publish to NPM
+      if: env.skip == 'false'
+      id: publish_npm
+      run: |
+        cd temp_package
+        npm publish --access public  # Publish with public access
+      continue-on-error: true  # Continue even if this step fails
+
+    - name: Upload tag as artifact
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: failed-tag
+        path: <(echo ${{ env.new_tag }})
+      
+  rollback:
+    runs-on: ubuntu-latest
+    needs: release
+    if: failure()  # Only run if the release job fails
+
+    steps:
+    - name: Download tag artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: failed-tag
+
+    - name: Delete release and tag
+      run: |
+        tag=$(cat failed-tag)
+        bash .github/scripts/delete-release.sh "$tag" "${{ secrets.GITHUB_TOKEN }}" "${{ github.repository }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Delete NPM Package
+      run: |
+        tag=$(cat failed-tag)
+        npm deprecate $tag "Deprecation reason" || echo "Package not found"
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
+
