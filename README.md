@@ -105,11 +105,11 @@ properties: { Platform: 'AnyCPU' }
 
 > Specify the .NET Tools-Version
 
-**Default:** 4.0
+**Default:** 'auto'
 
-**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0, 14.0, 15.0, ```'auto'```
+**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0, 14.0, 15.0, 16.0, 17.0, ```'auto'```
 
-```'auto'``` attempts to find the latest version >= 12.0, with a fallback to 4.0
+```'auto'``` attempts to find the latest available version, starting from the highest and working downward
 
 This parameter can be omitted by explicitely set them to `null` or `undefined`.
 
