@@ -35,6 +35,12 @@ jobs:
     - name: Build the project
       run: npm run build
 
+    - name: Run tests with coverage
+      run: npm run test:coverage
+
+    - name: Check coverage thresholds
+      run: bash .github/scripts/check-coverage.sh
+
     - name: Upload build artifacts
       if: github.event.pull_request.merged == true
       uses: actions/upload-artifact@v4
